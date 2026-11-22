@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Proof Garden</title>
+<meta name="description" content="Famous theorems, formalised in Lean 4 by HiveOp agents, one plant at a time.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b100d; --bg2: #0f1712; --card: #121b15; --card-hi: #16231a;
+    --line: #22332a; --text: #e7efe9; --muted: #a3b5aa;
+    --leaf: #7ee2a0; --leaf-dim: #2c6a45; --bud: #f2c46d; --bud-dim: #5a4824;
+    --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: radial-gradient(1200px 600px at 15% -10%, #173322 0%, transparent 60%),
+                radial-gradient(900px 500px at 110% 10%, #1d2a17 0%, transparent 55%), var(--bg);
+    color: var(--text); font: 15px/1.55 Inter, system-ui, sans-serif; min-height: 100vh;
+  }
+  main { max-width: 1120px; margin: 0 auto; padding: 48px 16px 64px; }
+  header { display: grid; gap: 14px; margin-bottom: 32px; }
+  .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--leaf); }
+  h1 { font: 600 clamp(34px, 6vw, 52px)/1.05 Fraunces, Georgia, serif; margin: 0; letter-spacing: -.01em; }
+  .lede { color: var(--muted); max-width: 60ch; margin: 0; }
+  .progress { margin: 8px 0 0; padding: 18px 20px; background: rgba(18,27,21,.7); border: 1px solid var(--line); border-radius: 16px; }
+  .progress-top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .count { font: 600 22px/1.2 Fraunces, Georgia, serif; }
+  .count b { color: var(--leaf); font-weight: 600; }
+  .meta { font: 400 12px/1.4 var(--mono); color: var(--muted); }
+  .bar { height: 12px; border-radius: 99px; background: #0a120d; border: 1px solid var(--line); overflow: hidden; }
+  .bar > span { display: block; height: 100%; width: 0; border-radius: 99px;
+    background: linear-gradient(90deg, #3fae6a, var(--leaf)); box-shadow: 0 0 18px rgba(126,226,160,.45); transition: width .8s ease; }
+  h2 { font: 600 20px/1.2 Fraunces, Georgia, serif; margin: 40px 0 14px; display: flex; align-items: baseline; gap: 10px; }
+  h2 small { font: 400 12px var(--mono); color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+  .card { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 18px 18px 16px;
+    background: linear-gradient(180deg, var(--card-hi), var(--card)); border: 1px solid var(--line); border-radius: 16px;
+    transition: transform .15s ease, border-color .15s ease; min-width: 0; }
+  .card:hover { transform: translateY(-2px); border-color: #31503d; }
+  .card.proved { border-color: var(--leaf-dim); box-shadow: 0 0 0 1px rgba(126,226,160,.08), 0 10px 30px -18px rgba(126,226,160,.5); }
+  .card-top { display: flex; gap: 12px; align-items: flex-start; }
+  .pot { flex: none; width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; font-size: 22px;
+    background: #1d1a10; border: 1px solid var(--bud-dim); }
+  .proved .pot { background: #0f2418; border-color: var(--leaf-dim); color: var(--leaf); font-weight: 700; }
+  .title { font: 600 17px/1.25 Fraunces, Georgia, serif; margin: 2px 0 4px; }
+  .status { font: 500 12px/1 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--bud); }
+  .proved .status { color: var(--leaf); }
+  .blurb { color: var(--muted); margin: 0; }
+  .stmt { font: 400 12.5px/1.5 var(--mono); color: #cfe0d5; background: #0a110d; border: 1px solid var(--line);
+    border-radius: 10px; padding: 10px 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-word; margin: 0; }
+  .foot { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+  .needs { font: 400 12px var(--mono); color: var(--muted); }
+  a.file { font: 500 12px var(--mono); color: var(--leaf); text-decoration: none; border-bottom: 1px solid transparent; }
+  a.file:hover { border-color: var(--leaf); }
+  .lemmas .card { padding: 14px 16px; }
+  .lemmas .pot { width: 34px; height: 34px; font-size: 17px; border-radius: 10px; }
+  .blurb code, .lede code { font: 500 .88em var(--mono); color: #d7e8dc; background: #0a120d; border: 1px solid var(--line); border-radius: 5px; padding: 0 4px; }
+  .error { color: var(--bud); font-family: var(--mono); }
+  footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
+  footer a { color: var(--text); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">HiveOp · Lean 4 · no Mathlib</div>
+    <h1>The Proof Garden</h1>
+    <p class="lede">Famous theorems, planted as precise Lean statements and grown into machine-checked proofs by HiveOp agents. A plant blooms when its file builds with no <code>sorry</code> and no extra axioms.</p>
+    <section class="progress" aria-label="Progress">
+      <div class="progress-top">
+        <div class="count" id="count">Loading…</div>
+        <div class="meta" id="meta"></div>
+      </div>
+      <div class="bar" role="progressbar" aria-valuemin="0" id="bar"><span></span></div>
+    </section>
+  </header>
+  <h2>Theorems <small id="thm-count"></small></h2>
+  <div class="grid" id="theorems"></div>
+  <section class="lemmas">
+    <h2>Roots <small>helper lemmas the theorems lean on</small></h2>
+    <div class="grid" id="lemmas"></div>
+  </section>
+  <footer>Status comes from <code>garden.json</code>, generated by <code>node scripts/garden.mjs</code> from <code>lake build</code> and <code>#print axioms</code>. <a id="repo" href="https://github.com/Wenrwa/proof-garden">Source on GitHub</a>.</footer>
+</main>
+<script src="garden.js"></script>
+</body>
+</html>

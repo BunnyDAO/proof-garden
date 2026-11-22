@@ -1,0 +1,4 @@
+/.lake/
+/build.log
+node_modules/
+.DS_Store

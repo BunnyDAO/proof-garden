@@ -1,0 +1,8 @@
+name = "proof-garden"
+version = "0.1.0"
+defaultTargets = ["ProofGarden"]
+
+# No dependencies on purpose: no Mathlib, core Lean 4 only.
+
+[[lean_lib]]
+name = "ProofGarden"

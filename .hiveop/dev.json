@@ -1,0 +1,5 @@
+{
+  "command": "node scripts/serve.mjs",
+  "port": 3000,
+  "readyPath": "/"
+}

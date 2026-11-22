@@ -1,0 +1,326 @@
+{
+  "generatedAt": "2026-11-22T21:28:08.188Z",
+  "toolchain": "leanprover/lean4:v4.35.0",
+  "repo": "https://github.com/Wenrwa/proof-garden",
+  "build": {
+    "ok": true,
+    "axiomsChecked": true
+  },
+  "proved": 0,
+  "total": 10,
+  "lemmas": {
+    "proved": 0,
+    "total": 4
+  },
+  "plants": [
+    {
+      "id": "Cantor",
+      "kind": "theorem",
+      "title": "Cantor's theorem",
+      "blurb": "There is no way to list all subsets of a set using the set's own elements: for any map `f` from a type `α` to its subsets, some subset is missed. (The subset `{a | a ∉ f a}` cannot be `f a` for any `a`.)",
+      "file": "ProofGarden/Cantor.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/Cantor.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.cantor",
+          "doc": "No function from a type to its powerset (`α → Prop`) is surjective: there is always a subset `s` that `f` never hits.",
+          "statement": "theorem cantor {α : Type} (f : α → (α → Prop)) : ¬ ∀ s : α → Prop, ∃ a, f a = s",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "EuclidsLemma",
+      "kind": "theorem",
+      "title": "Euclid's lemma",
+      "blurb": "If a prime divides a product, it divides one of the factors. This is the fact that makes prime factorisations unique.",
+      "file": "ProofGarden/EuclidsLemma.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/EuclidsLemma.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.euclids_lemma",
+          "doc": "If `p` is prime and `p ∣ a * b`, then `p ∣ a` or `p ∣ b`.",
+          "statement": "theorem euclids_lemma {p a b : Nat} (hp : IsPrime p) (h : p ∣ a * b) : p ∣ a ∨ p ∣ b",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "FibonacciCoprime",
+      "kind": "theorem",
+      "title": "Neighbouring Fibonacci numbers are coprime",
+      "blurb": "Two consecutive Fibonacci numbers never share a factor bigger than 1. Running Euclid's algorithm on them just walks the sequence back down to `fib 1 = 1`.",
+      "file": "ProofGarden/FibonacciCoprime.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/FibonacciCoprime.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.fib_coprime_succ",
+          "doc": "`gcd (fib n) (fib (n + 1)) = 1` for every `n`.",
+          "statement": "theorem fib_coprime_succ (n : Nat) : Nat.gcd (fib n) (fib (n + 1)) = 1",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "GaussSum",
+      "kind": "theorem",
+      "title": "Gauss's sum",
+      "blurb": "The numbers from 1 to `n` add up to `n(n+1)/2`, the trick young Gauss is said to have used to add 1 to 100 in seconds.",
+      "file": "ProofGarden/GaussSum.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/GaussSum.lean",
+      "dependsOn": [
+        "Lemmas/GaussDouble"
+      ],
+      "decls": [
+        {
+          "name": "ProofGarden.gauss_sum",
+          "doc": "`1 + 2 + ... + n = n * (n + 1) / 2`.",
+          "statement": "theorem gauss_sum (n : Nat) : sumRange (n + 1) (fun i => i) = n * (n + 1) / 2",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "InfinitudeOfPrimes",
+      "kind": "theorem",
+      "title": "Euclid: there are infinitely many primes",
+      "blurb": "However large a number `n` you pick, there is a prime bigger than it. (Any prime factor of `n! + 1` works: it cannot be ≤ `n`, since those all divide `n!`.)",
+      "file": "ProofGarden/InfinitudeOfPrimes.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/InfinitudeOfPrimes.lean",
+      "dependsOn": [
+        "Lemmas/Factorial",
+        "Lemmas/PrimeFactor"
+      ],
+      "decls": [
+        {
+          "name": "ProofGarden.infinitely_many_primes",
+          "doc": "For every `n` there is a prime `p` with `n < p`.",
+          "statement": "theorem infinitely_many_primes (n : Nat) : ∃ p, n < p ∧ IsPrime p",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "Nicomachus",
+      "kind": "theorem",
+      "title": "Nicomachus's theorem",
+      "blurb": "The sum of the first cubes is the square of the sum of the first numbers: `1³ + 2³ + ... + n³ = (1 + 2 + ... + n)²`.",
+      "file": "ProofGarden/Nicomachus.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/Nicomachus.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.nicomachus",
+          "doc": "`0³ + 1³ + ... + n³ = (0 + 1 + ... + n)²`.",
+          "statement": "theorem nicomachus (n : Nat) : sumRange (n + 1) (fun i => i ^ 3) = (sumRange (n + 1) (fun i => i)) ^ 2",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "Pigeonhole",
+      "kind": "theorem",
+      "title": "The pigeonhole principle",
+      "blurb": "Put more pigeons than holes and two pigeons must share a hole.",
+      "file": "ProofGarden/Pigeonhole.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/Pigeonhole.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.pigeonhole",
+          "doc": "If `m < n`, any map from `n` things to `m` things sends two different things to the same place.",
+          "statement": "theorem pigeonhole {n m : Nat} (h : m < n) (f : Fin n → Fin m) : ∃ i j, i ≠ j ∧ f i = f j",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "PowersOfTwo",
+      "kind": "theorem",
+      "title": "Powers of two add up to one less than the next",
+      "blurb": "`1 + 2 + 4 + ... + 2ⁿ⁻¹ = 2ⁿ - 1`: a binary number made of `n` ones is one short of `2ⁿ`. Stated with `+ 1` on the left to avoid natural-number subtraction.",
+      "file": "ProofGarden/PowersOfTwo.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/PowersOfTwo.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.sum_powers_of_two",
+          "doc": "`(2⁰ + 2¹ + ... + 2ⁿ⁻¹) + 1 = 2ⁿ`.",
+          "statement": "theorem sum_powers_of_two (n : Nat) : sumRange n (fun i => 2 ^ i) + 1 = 2 ^ n",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "SqrtTwoIrrational",
+      "kind": "theorem",
+      "title": "√2 is irrational",
+      "blurb": "There is no fraction `p / q` whose square is exactly 2. Stated without real numbers: no natural numbers `p` and `q ≠ 0` satisfy `p² = 2q²`.",
+      "file": "ProofGarden/SqrtTwoIrrational.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/SqrtTwoIrrational.lean",
+      "dependsOn": [
+        "Lemmas/Parity"
+      ],
+      "decls": [
+        {
+          "name": "ProofGarden.sqrt_two_irrational",
+          "doc": "There are no natural numbers `p, q` with `q ≠ 0` and `p * p = 2 * q * q`.",
+          "statement": "theorem sqrt_two_irrational : ¬ ∃ p q : Nat, q ≠ 0 ∧ p * p = 2 * q * q",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "SumOfOdds",
+      "kind": "theorem",
+      "title": "The first n odd numbers add up to n²",
+      "blurb": "`1 + 3 + 5 + ... + (2n - 1) = n²`. Picture each odd number as an L-shaped layer wrapped around a square.",
+      "file": "ProofGarden/SumOfOdds.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/SumOfOdds.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.sum_of_odds",
+          "doc": "`1 + 3 + ... + (2n - 1) = n * n`.",
+          "statement": "theorem sum_of_odds (n : Nat) : sumRange n (fun i => 2 * i + 1) = n * n",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "Lemmas/Factorial",
+      "kind": "lemma",
+      "title": "Lemma: facts about the factorial",
+      "blurb": "Two small facts Euclid's proof needs: `n!` is never zero, and every number from 1 to `n` divides `n!`.",
+      "file": "ProofGarden/Lemmas/Factorial.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/Lemmas/Factorial.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.fact_pos",
+          "doc": "The factorial of any number is positive.",
+          "statement": "theorem fact_pos (n : Nat) : 0 < fact n",
+          "axioms": [
+            "sorryAx"
+          ]
+        },
+        {
+          "name": "ProofGarden.dvd_fact",
+          "doc": "Every `k` with `1 ≤ k ≤ n` divides `n!`.",
+          "statement": "theorem dvd_fact {k n : Nat} (h₁ : 1 ≤ k) (h₂ : k ≤ n) : k ∣ fact n",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "Lemmas/GaussDouble",
+      "kind": "lemma",
+      "title": "Lemma: twice the sum 0 + 1 + ... + n is n(n+1)",
+      "blurb": "Gauss's pairing trick without division: writing the sum forwards and backwards and adding gives `n` pairs of `n + 1`. Stated without `/` so it can be proved by plain induction.",
+      "file": "ProofGarden/Lemmas/GaussDouble.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/Lemmas/GaussDouble.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.two_mul_sum_upto",
+          "doc": "`2 * (0 + 1 + ... + n) = n * (n + 1)`.",
+          "statement": "theorem two_mul_sum_upto (n : Nat) : 2 * sumRange (n + 1) (fun i => i) = n * (n + 1)",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "Lemmas/Parity",
+      "kind": "lemma",
+      "title": "Lemma: if a square is even, the number is even",
+      "blurb": "An odd number times an odd number is odd, so if `p * p` is even then `p` is.",
+      "file": "ProofGarden/Lemmas/Parity.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/Lemmas/Parity.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.two_dvd_of_two_dvd_mul_self",
+          "doc": "If 2 divides `p * p`, then 2 divides `p`.",
+          "statement": "theorem two_dvd_of_two_dvd_mul_self {p : Nat} (h : 2 ∣ p * p) : 2 ∣ p",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    },
+    {
+      "id": "Lemmas/PrimeFactor",
+      "kind": "lemma",
+      "title": "Lemma: every number ≥ 2 has a prime factor",
+      "blurb": "The smallest divisor of `n` that is at least 2 is prime.",
+      "file": "ProofGarden/Lemmas/PrimeFactor.lean",
+      "url": "https://github.com/Wenrwa/proof-garden/blob/main/ProofGarden/Lemmas/PrimeFactor.lean",
+      "dependsOn": [],
+      "decls": [
+        {
+          "name": "ProofGarden.exists_prime_factor",
+          "doc": "Every natural number `n ≥ 2` is divisible by some prime.",
+          "statement": "theorem exists_prime_factor {n : Nat} (h : 2 ≤ n) : ∃ p, IsPrime p ∧ p ∣ n",
+          "axioms": [
+            "sorryAx"
+          ]
+        }
+      ],
+      "status": "growing",
+      "reason": "contains sorry"
+    }
+  ]
+}
