@@ -12,6 +12,14 @@
 // Usage:
 //   node scripts/garden.mjs              run lake build + axiom check, write garden.json
 //   node scripts/garden.mjs --log FILE   use an existing `lake build` log instead of building
+//   node scripts/garden.mjs --sources    refresh only what comes from the source text
+//                                        (proof code, Try-it bundles), keeping the
+//                                        existing verdicts; no Lean needed
+//
+// For the page it also records, per theorem, its Lean source (`code`) and,
+// per plant, a self-contained `bundle`: Defs, the helper lemmas it imports
+// (in order) and the file itself, with the ProofGarden imports removed, so
+// the "Try it" button can open it in the Lean web editor.
 //
 // Plain Node, no dependencies.
 
@@ -28,6 +36,7 @@ const SKIP = new Set(['Defs.lean']);
 
 const args = process.argv.slice(2);
 const logArg = args.includes('--log') ? args[args.indexOf('--log') + 1] : null;
+const sourcesOnly = args.includes('--sources');
 
 // ---------- scan sources ----------
 
@@ -46,6 +55,36 @@ function stripComments(src) {
 
 const clean = (s) => s.replace(/\s+/g, ' ').trim();
 
+// One theorem's text, from `theorem` to just before the next top-level
+// command (a doc comment, another declaration, `end`, ...).
+const TOP_LEVEL = /\n(?=\/--|\/-!|theorem\s|lemma\s|def\s|private\s|protected\s|noncomputable\s|instance\s|abbrev\s|structure\s|inductive\s|namespace\s|section\s|end\b|open\s|@\[|#)/g;
+function declCode(src, at) {
+  TOP_LEVEL.lastIndex = at;
+  const next = TOP_LEVEL.exec(src);
+  return src.slice(at, next ? next.index : src.length).trimEnd();
+}
+
+// The ProofGarden modules a file imports, as repo paths.
+const importsOf = (src) => [...src.matchAll(/^import\s+(ProofGarden(?:\.\w+)+)\s*$/gm)]
+  .map((x) => x[1].split('.').join('/') + '.lean');
+
+// Defs, the lemmas, then the file: each module once, after what it imports.
+function bundleOf(rel) {
+  const seen = new Set();
+  const parts = [];
+  const visit = (file) => {
+    if (seen.has(file)) return;
+    seen.add(file);
+    const abs = join(ROOT, file);
+    if (!existsSync(abs)) return;
+    const src = readFileSync(abs, 'utf8');
+    for (const dep of importsOf(src)) visit(dep);
+    parts.push(`-- ${file}\n` + src.replace(/^import\s+ProofGarden(?:\.\w+)+\s*\n/gm, '').trim());
+  };
+  visit(rel);
+  return parts.join('\n\n') + '\n';
+}
+
 function parseFile(abs, kind) {
   const src = readFileSync(abs, 'utf8');
   const rel = relative(ROOT, abs).split('\\').join('/');
@@ -57,7 +96,8 @@ function parseFile(abs, kind) {
   const re = /\/--([\s\S]*?)-\/\s*theorem\s+(\S+)([\s\S]*?):=/g;
   let m;
   while ((m = re.exec(src))) {
-    decls.push({ name: `ProofGarden.${m[2]}`, doc: clean(m[1]), statement: clean(`theorem ${m[2]}${m[3]}`) });
+    const at = src.indexOf('theorem', m.index + m[0].indexOf('-/'));
+    decls.push({ name: `ProofGarden.${m[2]}`, doc: clean(m[1]), statement: clean(`theorem ${m[2]}${m[3]}`), code: declCode(src, at) });
   }
   const code = stripComments(src);
   const dependsOn = [...src.matchAll(/^import\s+ProofGarden\.Lemmas\.(\w+)/gm)].map((x) => `Lemmas/${x[1]}`);
@@ -66,6 +106,7 @@ function parseFile(abs, kind) {
     kind, title, blurb, file: rel,
     url: `${REPO_URL}/blob/${BRANCH}/${rel}`,
     dependsOn, decls,
+    bundle: bundleOf(rel),
     hasSorry: /\bsorry\b/.test(code),
     hasAxiomDecl: /^\s*(private\s+)?axiom\s/m.test(code),
   };
@@ -79,6 +120,25 @@ for (const f of readdirSync(thmDir).sort()) {
 const lemDir = join(thmDir, 'Lemmas');
 if (existsSync(lemDir)) {
   for (const f of readdirSync(lemDir).sort()) if (f.endsWith('.lean')) plants.push(parseFile(join(lemDir, f), 'lemma'));
+}
+
+// ---------- sources only: keep the verdicts, refresh the source fields ----------
+
+if (sourcesOnly) {
+  const prev = JSON.parse(readFileSync(join(ROOT, 'garden.json'), 'utf8'));
+  const byId = new Map(plants.map((p) => [p.id, p]));
+  for (const old of prev.plants) {
+    const p = byId.get(old.id);
+    if (!p) continue;
+    old.bundle = p.bundle;
+    for (const d of old.decls) {
+      const fresh = p.decls.find((x) => x.name === d.name);
+      if (fresh) d.code = fresh.code;
+    }
+  }
+  writeFileSync(join(ROOT, 'garden.json'), JSON.stringify(prev, null, 2) + '\n');
+  console.log('garden: source fields refreshed; verdicts unchanged');
+  process.exit(0);
 }
 
 // ---------- build ----------
