@@ -5,7 +5,10 @@
 
   let g;
   try {
-    const res = await fetch('garden.json', { cache: 'no-store' });
+    // Local server: /garden.json beside the page. GitHub Pages (repo root):
+    // the page is /site/, the data one level up.
+    let res = await fetch('garden.json', { cache: 'no-store' });
+    if (!res.ok) res = await fetch('../garden.json', { cache: 'no-store' });
     g = await res.json();
   } catch (e) {
     $('count').innerHTML = '<span class="error">Could not load garden.json. Run node scripts/garden.mjs.</span>';
