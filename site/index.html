@@ -15,6 +15,13 @@
     --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
   }
   * { box-sizing: border-box; }
+  /* Thin, dark scrollbars that match the garden (page and code blocks). */
+  html, .code, .stmt { scrollbar-width: thin; scrollbar-color: #2c4a37 transparent; }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #2c4a37; border-radius: 99px; border: 2px solid var(--bg); }
+  ::-webkit-scrollbar-thumb:hover { background: var(--leaf-dim); }
+  ::-webkit-scrollbar-corner { background: transparent; }
   html, body { margin: 0; }
   body {
     background: radial-gradient(1200px 600px at 15% -10%, #173322 0%, transparent 60%),
