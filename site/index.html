@@ -16,9 +16,12 @@
   }
   * { box-sizing: border-box; }
   /* Thin, dark scrollbars that match the garden (page and code blocks). */
-  html, .code, .stmt { scrollbar-width: thin; scrollbar-color: #2c4a37 transparent; }
+  /* The track takes the page colour; transparent let macOS Chrome paint a white gutter. */
+  :root { color-scheme: dark; }
+  html { background: var(--bg); scrollbar-width: thin; scrollbar-color: #2c4a37 var(--bg); }
+  .code, .stmt { scrollbar-width: thin; scrollbar-color: #2c4a37 #070c09; }
   ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
   ::-webkit-scrollbar-thumb { background: #2c4a37; border-radius: 99px; border: 2px solid var(--bg); }
   ::-webkit-scrollbar-thumb:hover { background: var(--leaf-dim); }
   ::-webkit-scrollbar-corner { background: transparent; }
